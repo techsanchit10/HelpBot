@@ -25,13 +25,18 @@ def sms_reply():
     msg = request.form.get('Body')
     sender = request.form.get('From')
     reply = fetch_reply(msg,sender)
-    new_record = { 'message_body': msg, 'sender_id' : sender, 'bot_reply': reply, 'sent_at' : str(datetime.datetime.now()) }
 
+    # Store in DB
+    new_record = { 'message_body': msg, 'sender_id' : sender, 'bot_reply': reply, 'sent_at' : str(datetime.datetime.now()) }
     records.insert_one(new_record)
-    # Create reply
+    # # Create reply
+    # # resp.message("You said: {}".format(msg)).media("https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
+
     resp = MessagingResponse()
-    # resp.message("You said: {}".format(msg)).media("https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
-    resp.message(reply)
+    if msg == 'help' or msg == 'Help' or msg =='HELP':
+        resp.message("Hello, I am a *_HelpBot_*. How may I help you? \n\nYou can search for news by providing us the *news type*! \nEg: *show me sports news* \n\nYou can also search for *restaurants/cafes* in any area \nEg: *show me restaurants in gurgaon* \n\nYou can check the *temperature* of any paticular location \nEg: *what is the temperature of amritsar*")
+    else:
+        resp.message(reply)
     return str(resp)
 
 if __name__ == "__main__":
