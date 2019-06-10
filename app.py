@@ -24,19 +24,26 @@ def sms_reply():
     print(json.dumps(request.form,indent = 2))
     msg = request.form.get('Body')
     sender = request.form.get('From')
-    reply = fetch_reply(msg,sender)
+    reply,img,search = fetch_reply(msg,sender)
 
     # Store in DB
-    new_record = { 'message_body': msg, 'sender_id' : sender, 'bot_reply': reply, 'sent_at' : str(datetime.datetime.now()) }
-    records.insert_one(new_record)
     # # Create reply
     # # resp.message("You said: {}".format(msg)).media("https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png")
 
     resp = MessagingResponse()
     if msg == 'help' or msg == 'Help' or msg =='HELP':
-        resp.message("Hello, I am a *_HelpBot_*. How may I help you? \n\nYou can search for news by providing us the *news type*! \nEg: *show me sports news* \n\nYou can also search for *restaurants/cafes* in any area \nEg: *show me restaurants in gurgaon* \n\nYou can check the *temperature* of any paticular location \nEg: *what is the temperature of amritsar*")
+        resp.message("Hello, I am a *_HelpBot_*. How may I help you? \n\nYou can search for news by providing us the *<new></new>s type*! \nEg: *show me sports news* \n\nYou can also search for *restaurants/cafes* in any area \nEg: *show me restaurants in gurgaon* \n\nYou can check the *temperature* of any paticular location \nEg: *what is the temperature of amritsar*")
+        new_record = { 'message_body': msg, 'sender_id' : sender, 'bot_reply': reply, 'sent_at' : str(datetime.datetime.now()) }
+        records.insert_one(new_record)
+    elif search == 'reviews':
+    	resp.message('{}'.format(reply)).media(img)
+    	new_record = { 'message_body': msg, 'sender_id' : sender, 'bot_reply': reply, 'cover': img, 'sent_at' : str(datetime.datetime.now()) }
+    	records.insert_one(new_record)
     else:
         resp.message(reply)
+        new_record = { 'message_body': msg, 'sender_id' : sender, 'bot_reply': reply, 'sent_at' : str(datetime.datetime.now()) }
+        records.insert_one(new_record)
+    
     return str(resp)
 
 if __name__ == "__main__":

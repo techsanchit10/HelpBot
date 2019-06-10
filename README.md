@@ -9,6 +9,11 @@ To join the chatbot click on the following link:
   
   2. Read <b><u>daily news</u></b> by providing the news <b>category</b> <br>
     Eg: <b> show me sports news from India</b>
+
+  3. Get <b><u>Movie/Show</u></b> Reviews <br>
+    Eg: <b> show me reviews of GOT </b>
     
-  3. Get <b><u>Weather</u></b> forecast details <br>
+  4. Get <b><u>Weather</u></b> forecast details <br>
     Eg: <b> what is the weather in delhi </b>
+
+

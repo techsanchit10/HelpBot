@@ -2,6 +2,7 @@ cachetools==3.1.1
 certifi==2019.3.9
 chardet==3.0.4
 Click==7.0
+imdbpy
 dialogflow==0.6.0
 dnspython==1.16.0
 feedparser==5.2.1

@@ -2,7 +2,7 @@ import os
 from gnewsclient import gnewsclient
 from geopy.geocoders import Nominatim
 import requests,json
-
+import imdb
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "client-secret.json"
 
@@ -84,6 +84,28 @@ def get_restaurant(parameters):
 	return show_details
 
 
+def get_reviews(parameters):
+	print(parameters)
+	ia = imdb.IMDb()
+	mov_name = parameters.get('movie_name')
+	s_result = ia.search_movie(mov_name)
+	details = s_result[0]
+	ia.update(details)
+	movie_search = parameters.get('movie_search')
+	cover = details['cover url']
+	name = details['title']
+	rating = details['rating']
+	cast = ''
+	for i in range(4):
+		cast += str(details['cast'][i]) + ', '
+	print (cover)
+	show_details = "\n*Title: {}*\n*Cast:* *{}*\n*Rating: {}*★".format(name,cast,rating)
+	return show_details, cover, movie_search
+
+
+
+
+
 def detect_intent_from_text(text, session_id, language_code='en'):
     session = dialogflow_session_client.session_path(PROJECT_ID, session_id)
     text_input = dialogflow.types.TextInput(text=text, language_code=language_code)
@@ -102,14 +124,20 @@ def fetch_reply(msg, session_id):
 		for row in news:
 			news_str += "\n\n{}\n\n{}\n\n".format(row['title'],row['link'])
 		print(news_str)
-		return news_str[:1000]
+		return news_str[:1000], None, None
 
 	if response.intent.display_name == 'get_temp':
 		temp = get_temp(dict(response.parameters))
-		return '{}'.format(temp)
+		return '{}'.format(temp), None, None
 
 	if response.intent.display_name == 'get_restaurant':
 		rest_details = get_restaurant(dict(response.parameters))
-		return rest_details
+		return rest_details, None, None
+
+	if response.intent.display_name == 'get_reviews':
+		movie_reviews, cover, movie_search = get_reviews(dict(response.parameters))
+		print(movie_reviews)
+		return movie_reviews, cover, movie_search
+
 	else:
-		return response.fulfillment_text
+		return response.fulfillment_text, None, None
